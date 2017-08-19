@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
@@ -6,9 +7,9 @@ using System.ServiceModel.Web;
 namespace RestServer
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single,
-                    ConcurrencyMode = ConcurrencyMode.Single,
-                    IncludeExceptionDetailInFaults = true,
-                    AutomaticSessionShutdown = true)]
+        ConcurrencyMode = ConcurrencyMode.Single,
+        IncludeExceptionDetailInFaults = true,
+        AutomaticSessionShutdown = true)]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class Service : IService
     {
@@ -21,41 +22,35 @@ namespace RestServer
         {
             string nombreARetornar;
             if (string.IsNullOrEmpty(name))
-            {
                 nombreARetornar = "Hello ....";
-            }
             {
                 nombreARetornar = name;
             }
-            return string.Format("Hello {0}!", nombreARetornar);
+            return $"Hello {nombreARetornar}!";
         }
 
         public string SayHello2(string name, string sourcename)
         {
             string nombreARetornar, apellidoARetornar;
             if (string.IsNullOrEmpty(name))
-            {
                 nombreARetornar = "Parametro1Null";
-            }
             {
                 nombreARetornar = name;
             }
 
             if (string.IsNullOrEmpty(sourcename))
-            {
                 apellidoARetornar = "Parametro1Null";
-            }
             {
                 apellidoARetornar = name;
             }
 
-            return string.Format("DosParametros p1:{0} p2:{1}", nombreARetornar, apellidoARetornar);
+            return $"DosParametros p1:{nombreARetornar} p2:{apellidoARetornar}";
         }
 
         public string SayHello3(string name, string sourcename, string nickname)
         {
-            WebOperationContext context = WebOperationContext.Current;
-            string sitesId = context.IncomingRequest.Headers["HeaderKey"];
+            var context = WebOperationContext.Current;
+            var sitesId = context.IncomingRequest.Headers["HeaderKey"];
 
             var isValid = false;
 
@@ -67,25 +62,20 @@ namespace RestServer
 
 
                 foreach (var item in ListSite)
-                {
                     if (item.ToUpper().Equals(siteValid))
                         isValid = true;
-                }
-
             }
             if (!isValid)
             {
                 context.OutgoingResponse.Headers.Add("ValidSegurity", "false");
-                context.OutgoingResponse.StatusCode = System.Net.HttpStatusCode.Unauthorized;
-                return System.Net.HttpStatusCode.Unauthorized.ToString();
+                context.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
+                return HttpStatusCode.Unauthorized.ToString();
             }
 
 
             string nombreARetornar;
             if (string.IsNullOrEmpty(name))
-            {
                 nombreARetornar = "persona";
-            }
             {
                 nombreARetornar = name;
             }
@@ -93,7 +83,7 @@ namespace RestServer
             context.OutgoingResponse.Headers.Add("ValidSegurity", "true");
 
 
-            return string.Format("Hola {0}! ap: {1} apodo: {2}", nombreARetornar, sourcename, nickname);
+            return $"Hola {nombreARetornar}! ap: {sourcename} apodo: {nickname}";
         }
     }
 }
