@@ -2,32 +2,32 @@
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
-
 namespace RestServer
 {
     public class ServerREST
     {
-        WebServiceHost host;
+        private WebServiceHost host;
+
         public void Iniciar(string uriString)
         {
             try
             {
                 var service = new Service();
-                this.host = new WebServiceHost(service, new Uri(uriString));
+                host = new WebServiceHost(service, new Uri(uriString));
 
-                this.host.AddServiceEndpoint(typeof(IService), new WebHttpBinding(), "");
-                this.host.Open();
+                host.AddServiceEndpoint(typeof(IService), new WebHttpBinding(), "");
+                host.Open();
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error: " + e.ToString());
+                Console.WriteLine("Error: " + e);
                 throw;
             }
         }
 
         public void Detener()
         {
-            this.host.Close();
+            host.Close();
         }
     }
 }
